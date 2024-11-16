@@ -1,7 +1,9 @@
 package ru.sberSchool.tasks;
 
+import ru.sberSchool.tasks.task1.Task1;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        Task1.run();
     }
 }
