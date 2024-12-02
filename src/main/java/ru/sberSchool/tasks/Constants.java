@@ -14,4 +14,12 @@ public class Constants {
     public static final String ONLY_DIGIT_MESSAGE = "Ожидается ввод только цифр.";
     public static final String INVALID_PIN_MESSAGE = "Введен некорректный пин-код!";
     public static final String SERVER_CODE_RESPONSE_MESSAGE = "Сервер вернул код ответа: %s";
+
+    public static final String NON_NEGATIVE_NUMBER_MESSAGE = "Number must be non-negative.";
+    public static final String FAILED_TO_ACCESS_FIELD = "Failed to access field: %s";
+    public static final String ASSIGN_EXCEPTION_MESSAGE = "Error during assigning!";
+
+    public static final String GET_PREFIX = "get";
+    public static final String SET_PREFIX = "set";
+
 }
