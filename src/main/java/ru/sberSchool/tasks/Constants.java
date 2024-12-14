@@ -37,6 +37,10 @@ public class Constants {
     public static final String REQUEST_ERROR_MESSAGE = "Unexpected code: %s";
     public static final String RESPONSE_BODY_NULL_MESSAGE = "Response body is null!";
     public static final String WEATHER_API_REQUEST_ERROR_MESSAGE = "Error during request execution";
+    public static final String PREDICATE_NON_NULL = "Predicate can't be null!";
+    public static final String TRANSFORM_FUNC_NON_NULL = "Transform function can't be null!";
+    public static final String KEY_MAPPER_NON_NULL = "Key mapper can't be null!";
+    public static final String VALUE_MAPPER_NON_NULL = "Value mapper can't be null!";
 
     public static final String UNDERSCORE_SEPARATOR = "_";
 
