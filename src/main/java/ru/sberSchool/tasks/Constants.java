@@ -19,6 +19,9 @@ public class Constants {
     public static final String FAILED_TO_ACCESS_FIELD = "Failed to access field: %s";
     public static final String ASSIGN_EXCEPTION_MESSAGE = "Error during assigning!";
 
+    public static final String NON_NULL_ARRAY_MESSAGE = "Array cannot be null";
+    public static final String NO_ELEMENTS_MESSAGE = "No more elements in the array";
+
     public static final String GET_PREFIX = "get";
     public static final String SET_PREFIX = "set";
 

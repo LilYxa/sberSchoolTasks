@@ -1,6 +1,6 @@
-package task5.model;
+package ru.sberSchool.tasks.task5.model;
 
-public class Source {
+public class Target {
 
     private String name;
     private int age;

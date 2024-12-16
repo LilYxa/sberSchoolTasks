@@ -1,4 +1,4 @@
-package task5;
+package ru.sberSchool.tasks.task5;
 
 public class TestClass {
 

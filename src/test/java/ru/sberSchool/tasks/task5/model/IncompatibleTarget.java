@@ -1,4 +1,4 @@
-package task5.model;
+package ru.sberSchool.tasks.task5.model;
 
 public class IncompatibleTarget {
 

@@ -1,13 +1,12 @@
-package task5.utils;
+package ru.sberSchool.tasks.task5.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.sberSchool.tasks.task5.exceptions.AssignException;
-import ru.sberSchool.tasks.task5.utils.BeanUtils;
-import task5.model.IncompatibleTarget;
-import task5.model.Source;
-import task5.model.Target;
+import ru.sberSchool.tasks.task5.model.Source;
+import ru.sberSchool.tasks.task5.model.Target;
+import ru.sberSchool.tasks.task5.model.IncompatibleTarget;
 
 import static org.junit.jupiter.api.Assertions.*;
 
