@@ -25,6 +25,7 @@ public class Constants {
     public static final String CLASS_EXTENSION = ".class";
     public static final String CACHE_EXTENSION = ".cache";
     public static final String ZIP_EXTENSION = ".zip";
+    public static final String TXT_EXTENSION = ".txt";
 
     public static final String CLASS_NOT_FOUND_MSG = "Класс %s не найден";
     public static final String ERROR_DURING_CLASS_LOADING = "Ошибка при загрузке класса %s";
@@ -41,6 +42,7 @@ public class Constants {
     public static final String TRANSFORM_FUNC_NON_NULL = "Transform function can't be null!";
     public static final String KEY_MAPPER_NON_NULL = "Key mapper can't be null!";
     public static final String VALUE_MAPPER_NON_NULL = "Value mapper can't be null!";
+    public static final String EMPTY_FILE_MESSAGE = "File is empty!";
 
     public static final String UNDERSCORE_SEPARATOR = "_";
 
