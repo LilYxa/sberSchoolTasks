@@ -22,6 +22,16 @@ public class Constants {
     public static final String NON_NULL_ARRAY_MESSAGE = "Array cannot be null";
     public static final String NO_ELEMENTS_MESSAGE = "No more elements in the array";
 
+    public static final String CLASS_EXTENSION = ".class";
+
+    public static final String CLASS_NOT_FOUND_MSG = "Класс %s не найден";
+    public static final String ERROR_DURING_CLASS_LOADING = "Ошибка при загрузке класса %s";
+    public static final String PLUGIN_DIRECTORY_NON_EXIST_MSG = "Plugin directory does not exist: %s";
+    public static final String CLASS_NOT_PLUGIN_MSG = "Class does not implement Plugin interface: %s";
+    public static final String FAILED_LOAD_PLUGIN = "Failed to load plugin: %s";
+
+    public static final String PLUGIN_FOLDER = "src/main/java/ru/sberSchool/tasks/task7/rockPaperScissors/plugins";
+
     public static final String GET_PREFIX = "get";
     public static final String SET_PREFIX = "set";
 
