@@ -43,6 +43,9 @@ public class Constants {
     public static final String KEY_MAPPER_NON_NULL = "Key mapper can't be null!";
     public static final String VALUE_MAPPER_NON_NULL = "Value mapper can't be null!";
     public static final String EMPTY_FILE_MESSAGE = "File is empty!";
+    public static final String ILLEGAL_TASKS_COUNT_MESSAGE = "Tasks number must be greater than 0!";
+    public static final String THREAD_POOL_NOT_STARTED_MESSAGE = "ThreadPool not started yet.";
+    public static final String INVALID_THREAD_LIMITS_MESSAGE = "Invalid thread limits.";
 
     public static final String UNDERSCORE_SEPARATOR = "_";
 
