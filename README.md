@@ -56,3 +56,15 @@
 # Задание 10
 [Реализация](https://github.com/LilYxa/sberSchoolTasks/tree/task10/src/main/java/ru/sberSchool/tasks/task10) \
 [Тесты](https://github.com/LilYxa/sberSchoolTasks/tree/task10/src/test/java/ru/sberSchool/tasks/task10)
+
+---
+
+# Задание 11
+[Реализация](https://github.com/LilYxa/sberSchoolTasks/tree/task11/src/main/java/ru/sberSchool/tasks/task11) \
+[Тесты](https://github.com/LilYxa/sberSchoolTasks/tree/task11/src/test/java/ru/sberSchool/tasks/task11)
+
+---
+
+# Задание 13
+[Реализация](https://github.com/LilYxa/sberSchoolTasks/tree/task13/src/main/java/ru/sberSchool/tasks/task8) \
+[Тесты](https://github.com/LilYxa/sberSchoolTasks/blob/task13/src/test/java/ru/sberSchool/tasks/task8/CacheProxyTest.java)
