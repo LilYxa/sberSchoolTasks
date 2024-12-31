@@ -12,6 +12,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
@@ -33,6 +35,7 @@ public class CacheInvocationHandler implements InvocationHandler {
     private final Object target;
     private final String rootPath;
     private final Map<String, Object> cache;
+    private final Map<String, ReentrantLock> locks = new ConcurrentHashMap<>();
 
     /**
      * Constructs a {@code CacheInvocationHandler} with the specified target object,
@@ -99,16 +102,25 @@ public class CacheInvocationHandler implements InvocationHandler {
      */
     private Object handleInMemoryCache(Method method, Object[] args, String cacheKey, Cache cacheAnnotation) throws InvocationTargetException, IllegalAccessException {
         log.debug("handleInMemoryCache[0]: Handling in-memory cache with key: {}", cacheKey);
-        if (cache.containsKey(cacheKey)) {
-            log.debug("handleInMemoryCache[1]: Cache hit");
-            return cache.get(cacheKey);
-        }
 
-        log.debug("handleInMemoryCache[2]: Cache miss, invoking original method");
-        Object result = method.invoke(target, args);
-        result = applyListLimit(result, cacheAnnotation.listLimit());
-        cache.put(cacheKey, result);
-        return result;
+        locks.putIfAbsent(cacheKey, new ReentrantLock());
+        ReentrantLock lock = locks.get(cacheKey);
+
+        lock.lock(); // Блокировка для работы с конкретным ключом
+        try {
+            if (cache.containsKey(cacheKey)) {
+                log.debug("handleInMemoryCache[1]: Cache hit");
+                return cache.get(cacheKey);
+            }
+
+            log.debug("handleInMemoryCache[2]: Cache miss, invoking original method");
+            Object result = method.invoke(target, args);
+            result = applyListLimit(result, cacheAnnotation.listLimit());
+            cache.put(cacheKey, result);
+            return result;
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -128,30 +140,38 @@ public class CacheInvocationHandler implements InvocationHandler {
      */
     private Object handleFileCache(Method method, Object[] args, String cacheKey, Cache cacheAnnotation) throws FolderCreationException, IOException, ClassNotFoundException, InvocationTargetException, IllegalAccessException, NonSerializableDataException {
         log.debug("handleFileCache[0]: Handling file cache with key: {}", cacheKey);
-        String fileName = cacheKey + Constants.CACHE_EXTENSION + (cacheAnnotation.zip() ? Constants.ZIP_EXTENSION : "");
-        File cacheFile = new File(rootPath, fileName);
-        File parentDir = cacheFile.getParentFile();
+        ReentrantLock lock = locks.computeIfAbsent(cacheKey, k -> new ReentrantLock());
 
-        if (parentDir != null && !parentDir.exists()) {
-            boolean dirsCreated = parentDir.mkdirs();
-            if (dirsCreated) {
-                log.debug("handleFileCache[1]: Folder was created.");
-            } else {
-                log.error("handleFileCache[0]: Error during folder creation");
-                throw new FolderCreationException(Constants.FAILED_FOLDER_CREATION);
+        lock.lock();
+        try {
+            String fileName = cacheKey + Constants.CACHE_EXTENSION + (cacheAnnotation.zip() ? Constants.ZIP_EXTENSION : "");
+            File cacheFile = new File(rootPath, fileName);
+            File parentDir = cacheFile.getParentFile();
+
+            if (parentDir != null && !parentDir.exists()) {
+                boolean dirsCreated = parentDir.mkdirs();
+                if (dirsCreated) {
+                    log.debug("handleFileCache[1]: Folder was created.");
+                } else {
+                    log.error("handleFileCache[0]: Error during folder creation");
+                    throw new FolderCreationException(Constants.FAILED_FOLDER_CREATION);
+                }
             }
-        }
 
-        if (cache.containsKey(cacheKey)) {
-            log.debug("handleFileCache[2]: Cache hit");
-            return readFromFile(cacheFile, cacheAnnotation.zip());
-        }
+            if (cache.containsKey(cacheKey)) {
+                log.debug("handleFileCache[2]: Cache hit");
+                return readFromFile(cacheFile, cacheAnnotation.zip());
+            }
 
-        log.debug("handleFileCache[3]: Cache miss, invoking original method");
-        Object result = method.invoke(target, args);
-        result = applyListLimit(result, cacheAnnotation.listLimit());
-        writeToFile(cacheFile, result, cacheAnnotation.zip());
-        return result;
+            log.debug("handleFileCache[3]: Cache miss, invoking original method");
+            Object result = method.invoke(target, args);
+            result = applyListLimit(result, cacheAnnotation.listLimit());
+            writeToFile(cacheFile, result, cacheAnnotation.zip());
+            return result;
+        } finally {
+            lock.unlock();
+            locks.remove(cacheKey);
+        }
     }
 
     /**

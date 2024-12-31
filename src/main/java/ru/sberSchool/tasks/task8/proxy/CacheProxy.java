@@ -49,4 +49,13 @@ public class CacheProxy {
                 new CacheInvocationHandler(service, rootPath, defaultCache)
         );
     }
+
+    /**
+     * Factory method to create the cache. Can be overridden by subclasses.
+     *
+     * @return the cache map to use (default is ConcurrentHashMap).
+     */
+    protected Map<String, Object> createCache() {
+        return new ConcurrentHashMap<>();
+    }
 }

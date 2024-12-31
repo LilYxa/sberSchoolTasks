@@ -13,6 +13,10 @@ import ru.sberSchool.tasks.task8.service.impl.ServiceImpl;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -136,4 +140,127 @@ public class CacheProxyTest {
 
         assertTrue(exception.getMessage().contains("Data must be serializable"), "Exception should indicate serialization issue");
     }
+
+    @Test
+    void testConcurrentCacheAccessWithLocking() throws InterruptedException {
+        log.debug("testConcurrentCacheAccessWithLocking[0]: Start test");
+
+        CacheProxy cacheProxy = new CacheProxy("./cache");
+        Service service = cacheProxy.cache(new ServiceImpl());
+
+        // Количество потоков
+        int threadCount = 10;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        // Счетчик для проверки inconsistencies (неконсистентных значений)
+        AtomicInteger inconsistencies = new AtomicInteger();
+
+        String task = "testTask";
+        int value = 10;
+
+        // Флаг для хранения первого результата
+        final double[] firstResult = new double[1];
+
+        // Задача, которую будут выполнять потоки
+        Runnable taskRunner = () -> {
+            try {
+                // Выполняем работу и кэшируем результат
+                double result = service.doHardWork(task, value);
+
+                // Если это первый поток, сохраняем результат
+                if (inconsistencies.get() == 0) {
+                    firstResult[0] = result;
+                }
+
+                // Проверяем, что все потоки возвращают тот же результат
+                if (firstResult[0] != result) {
+                    inconsistencies.incrementAndGet();
+                }
+            } catch (Exception e) {
+                log.error("testConcurrentCacheAccessWithLocking[1]: Exception occurred", e);
+            } finally {
+                latch.countDown();
+            }
+        };
+
+        // Запускаем несколько потоков
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(taskRunner);
+        }
+
+        // Ожидаем завершения всех потоков
+        latch.await();
+        executorService.shutdown();
+
+        log.debug("testConcurrentCacheAccessWithLocking[2]: Inconsistencies = {}", inconsistencies.get());
+
+        // Проверяем, что все потоки завершили выполнение корректно (инконсистенций быть не должно)
+        assertEquals(0, inconsistencies.get(), "There should be no inconsistencies, as the cache access is synchronized.");
+    }
+
+    @Test
+    void testConcurrentCacheAccessWithoutLocking() throws InterruptedException {
+        log.debug("testConcurrentCacheAccessWithoutLocking[0]: Start test");
+
+        // Создаем кэш без блокировок для тестирования гонок
+        Map<String, Object> unsafeCache = new HashMap<>();
+        CacheProxy unsafeCacheProxy = new CacheProxy("./cache") {
+            @Override
+            protected Map<String, Object> createCache() {
+                return unsafeCache;
+            }
+        };
+        Service service = unsafeCacheProxy.cache(new ServiceImpl());
+
+        // Количество потоков
+        int threadCount = 10;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        // Счетчик для проверки inconsistencies (неконсистентных значений)
+        AtomicInteger inconsistencies = new AtomicInteger();
+
+        // Ключ для конкурентного доступа
+        String task = "testTask";
+        int value = 10;
+
+        // Задача, которую будут выполнять потоки
+        Runnable taskRunner = () -> {
+            try {
+                // Выполняем работу и кэшируем результат
+                double result = service.doHardWork(task, value);
+
+                // Сохраняем результат из первого потока, чтобы сравнить с результатами других потоков
+                if (inconsistencies.get() == 0) {
+                    inconsistencies.set((int) result); // Записываем первый результат
+                }
+
+                // Проверяем, что все потоки возвращают одинаковый результат
+                if (inconsistencies.get() != result) {
+                    inconsistencies.incrementAndGet();
+                }
+            } catch (Exception e) {
+                log.error("testConcurrentCacheAccessWithoutLocking[1]: Exception occurred", e);
+            } finally {
+                latch.countDown();
+            }
+        };
+
+        // Запускаем несколько потоков
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(taskRunner);
+        }
+
+        // Ожидаем завершения всех потоков
+        latch.await();
+        executorService.shutdown();
+
+        log.debug("testConcurrentCacheAccessWithoutLocking[2]: Inconsistencies = {}", inconsistencies.get());
+
+        assertTrue(inconsistencies.get() > 0, "There should be inconsistencies without proper locking");
+    }
+
+
+
 }
