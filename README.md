@@ -56,3 +56,10 @@
 # Задание 10
 [Реализация](https://github.com/LilYxa/sberSchoolTasks/tree/task10/src/main/java/ru/sberSchool/tasks/task10) \
 [Тесты](https://github.com/LilYxa/sberSchoolTasks/tree/task10/src/test/java/ru/sberSchool/tasks/task10)
+
+---
+
+# Задание 14
+[Реализация](https://github.com/LilYxa/sberSchoolTasks/tree/task14/src/main/java/ru/sberSchool/tasks/task14) \
+[Тесты](https://github.com/LilYxa/sberSchoolTasks/tree/task14/src/test/java/ru/sberSchool/tasks/task14)
+
