@@ -117,7 +117,7 @@ public class ScalableThreadPool implements ThreadPool {
                             // Удаляем лишний поток, если задач больше нет.
                             if (threads.size() > minThreads && taskQueue.isEmpty()) {
                                 log.debug("addThread[1]: Scaling down, removing idle worker.");
-                                threads.remove(Thread.currentThread());
+//                                threads.remove(Thread.currentThread());
                                 break;
                             }
                         }
