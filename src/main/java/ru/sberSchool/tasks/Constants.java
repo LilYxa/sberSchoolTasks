@@ -64,4 +64,9 @@ public class Constants {
     public static final String DB_URL = "DB_URL";
     public static final String DB_USER = "DB_USER";
     public static final String DB_PASSWORD = "DB_PASSWORD";
+
+    public static final String LINKS_FILE = "LINKS_FILE";
+    public static final String DOWNLOAD_DIR = "DOWNLOAD_DIR";
+    public static final String COUNT_THREADS = "COUNT_THREADS";
+    public static final String SPEED_LIMIT = "SPEED_LIMIT";
 }
