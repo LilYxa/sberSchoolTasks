@@ -60,4 +60,8 @@ public class Constants {
     public static final String WEATHER_BASE_URL = "BASE_URL";
 
     public static final String WEATHER_URL = "%s?key=%s&q=%s&aqi=no&lang=ru";
+
+    public static final String DB_URL = "DB_URL";
+    public static final String DB_USER = "DB_USER";
+    public static final String DB_PASSWORD = "DB_PASSWORD";
 }

@@ -1,2 +1,6 @@
 WEATHER_API_KEY=YOUR_KEY
 BASE_URL=https://api.weatherapi.com/v1/current.json
+
+DB_URL=your_url
+DB_USER=your_user
+DB_PASSWORD=your_password
